@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threads 詐騙與廣告封鎖清單</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent-glow: #ff0055;
+            --accent-glow-secondary: #00e5ff;
+            --text-main: #f0f0f0;
+            --text-muted: #888;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Abstract Background */
+        .bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(255, 0, 85, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(0, 229, 255, 0.08) 0%, transparent 50%);
+            filter: blur(60px);
+            animation: breathe 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes breathe {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 3.5rem;
+            letter-spacing: -1px;
+            background: linear-gradient(90deg, var(--accent-glow), var(--accent-glow-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.8s ease-out 0.2s backwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-glow-secondary);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+        }
+
+        button {
+            background: transparent;
+            color: white;
+            border: 1px solid var(--accent-glow);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 85, 0.2), transparent);
+            transition: left 0.5s ease;
+            z-index: -1;
+        }
+
+        button:hover {
+            background: rgba(255, 0, 85, 0.1);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
+            border-color: #ff3377;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar input {
+            padding-left: 3rem;
+            border-radius: 50px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 1.2rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        tr td:first-child { border-radius: 12px 0 0 12px; }
+        tr td:last-child { border-radius: 0 12px 12px 0; }
+
+        tr {
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tag {
+            background: rgba(255, 0, 85, 0.15);
+            color: #ff3377;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 0, 85, 0.3);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .link-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .link-card:hover {
+            border-color: var(--accent-glow-secondary);
+            transform: translateY(-2px);
+            background: rgba(0, 229, 255, 0.05);
+        }
+
+        .link-card .format {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-glow-secondary);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #error-msg {
+            color: #ff3377;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        a {
+            color: var(--accent-glow-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        a:hover {
+            color: white;
+            text-shadow: 0 0 8px var(--accent-glow-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-mesh"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Threads 封鎖防護網</h1>
+            <p class="subtitle">社群協作的詐騙與廣告帳號封鎖清單 (Serverless Architecture)</p>
+        </header>
+
+        <div class="glass-panel">
+            <h2>🚨 舉報可疑帳號</h2>
+            <form id="report-form">
+                <div class="form-group">
+                    <label>Threads 使用者網址</label>
+                    <input type="text" id="url-input" placeholder="https://www.threads.com/@username" required autocomplete="off">
+                    <div id="error-msg">無效的 Threads 網址，或包含不允許的路徑 (如 /post/)。</div>
+                </div>
+                <div class="form-group">
+                    <label>舉報原因</label>
+                    <select id="reason-input">
+                        <option value="投資詐騙">投資詐騙</option>
+                        <option value="假帳號/機器人">假帳號/機器人</option>
+                        <option value="惡意廣告/釣魚">惡意廣告/釣魚</option>
+                        <option value="色情/不當內容">色情/不當內容</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <button type="submit">送出審查 (轉往 GitHub)</button>
+            </form>
+        </div>
+
+        <div class="glass-panel" style="animation-delay: 0.4s;">
+            <h2>🛡️ 封鎖清單查詢</h2>
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" placeholder="搜尋 @username...">
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>帳號 (Username)</th>
+                            <th>原因</th>
+                            <th>收錄日期</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blocklist-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="animation-delay: 0.6s;">
+            <h2>🔗 訂閱源 (Subscription)</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                將以下網址加入您的廣告攔截器 (如 AdGuard, uBlock) 或自行串接 API。
+            </p>
+            <div class="links-grid">
+                <a href="blocklist.json" target="_blank" class="link-card">
+                    <div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted);">供開發者與 API 使用</div>
+                        <div style="font-weight: 600; margin-top: 0.3rem;">JSON 格式</div>
+                    </div>
+                    <div class="format">{ }</div>
+                </a>
+                <a href="blocklist.txt" target="_blank" class="link-card">
+                    <div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted);">供過濾器直接訂閱</div>
+                        <div style="font-weight: 600; margin-top: 0.3rem;">TXT 格式</div>
+                    </div>
+                    <div class="format">≡</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 設定您的 GitHub Repo 資訊
+        const GITHUB_OWNER = 'aneek2015'; // 需替換
+        const GITHUB_REPO = 'threadsblocklist'; // 需替換
+
+        const threadsRegex = /^https?:\/\/(www\.)?threads\.com\/@([a-zA-Z0-9_\.]+)(\/?|\?.*)?$/;
+
+        function validateURL(inputUrl) {
+            const cleanUrl = inputUrl.trim();
+            const match = cleanUrl.match(threadsRegex);
+            
+            if (cleanUrl.includes('/post/') || cleanUrl.includes('/replies')) {
+                return { valid: false, username: null };
+            }
+
+            if (match) {
+                return { valid: true, username: match[2] };
+            }
+            return { valid: false, username: null };
+        }
+
+        document.getElementById('report-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const urlInput = document.getElementById('url-input').value;
+            const reason = document.getElementById('reason-input').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            const validation = validateURL(urlInput);
+
+            if (!validation.valid) {
+                errorMsg.style.display = 'block';
+                document.getElementById('url-input').style.borderColor = '#ff3377';
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+            document.getElementById('url-input').style.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+            const username = validation.username;
+            const title = encodeURIComponent(`【檢舉】@${username}`);
+            const body = encodeURIComponent(
+`### 檢舉資訊
+- **被檢舉帳號**: @${username}
+- **網址**: ${urlInput.trim()}
+- **原因**: ${reason}
+
+*(請管理員確認後加上 \`approved\` 標籤以觸發自動更新)*`
+            );
+
+            const issueUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?title=${title}&body=${body}`;
+            window.open(issueUrl, '_blank');
+        });
+
+        let blocklistData = [];
+
+        async function fetchBlocklist() {
+            try {
+                const response = await fetch('blocklist.json');
+                if (response.ok) {
+                    blocklistData = await response.json();
+                }
+                renderTable(blocklistData);
+            } catch (error) {
+                console.error('Failed to load blocklist', error);
+                renderTable([]);
+            }
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('blocklist-body');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#888;">目前清單為空或載入中</td></tr>';
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.style.animation = `slideUp 0.3s ease-out ${index * 0.05}s backwards`;
+                
+                tr.innerHTML = `
+                    <td>
+                        <a href="${item.url}" target="_blank">@${item.username}</a>
+                    </td>
+                    <td><span class="tag">${item.reason}</span></td>
+                    <td style="color: #888; font-size: 0.9rem;">${item.added_at}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().replace('@', '');
+            const filtered = blocklistData.filter(item => 
+                item.username.toLowerCase().includes(term) || 
+                item.reason.toLowerCase().includes(term)
+            );
+            renderTable(filtered);
+        });
+
+        fetchBlocklist();
+    </script>
+</body>
+</html>

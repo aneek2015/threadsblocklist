@@ -1,0 +1,4 @@
+# Threads 詐騙封鎖清單 (Threads Scam Blocklist)
+# 每行一個封鎖網址 | One URL per line
+# 自動更新 by GitHub Actions | Auto-updated by GitHub Actions
+# 訂閱此清單: https://你的帳號.github.io/threads-blocklist/blocklist.txt
