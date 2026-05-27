@@ -3,372 +3,547 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threads 詐騙與廣告封鎖清單</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <title>Threads 詐騙封鎖系統</title>
+    <!-- 引入非主流、具設計感的字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Chakra+Petch:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #050505;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --accent-glow: #ff0055;
-            --accent-glow-secondary: #00e5ff;
-            --text-main: #f0f0f0;
-            --text-muted: #888;
+            --bg-base: #0a0a0a;
+            --grid-color: rgba(102, 252, 241, 0.08);
+            --primary: #66FCF1;
+            --primary-dim: rgba(102, 252, 241, 0.2);
+            --danger: #FF2A55;
+            --surface: #121212;
+            --surface-border: #2a2a2a;
+            --text-main: #f4f4f5;
+            --text-dim: #8a8d91;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Outfit', 'Noto Sans TC', sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-base);
             color: var(--text-main);
+            font-family: 'Chakra Petch', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center center;
             position: relative;
         }
 
-        /* Abstract Background */
-        .bg-mesh {
+        /* CRT 掃描線濾鏡 */
+        body::after {
+            content: "";
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            background: 
-                radial-gradient(circle at 15% 50%, rgba(255, 0, 85, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(0, 229, 255, 0.08) 0%, transparent 50%);
-            filter: blur(60px);
-            animation: breathe 10s ease-in-out infinite alternate;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.25) 51%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.7;
         }
 
-        @keyframes breathe {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
+        h1, h2, h3 {
+            font-family: 'Syne', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 4rem 2rem;
+            position: relative;
+            z-index: 10;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 4rem;
-            animation: slideUp 0.8s ease-out;
-        }
-
-        h1 {
-            font-weight: 800;
-            font-size: 3.5rem;
-            letter-spacing: -1px;
-            background: linear-gradient(90deg, var(--accent-glow), var(--accent-glow-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            font-weight: 300;
-        }
-
-        .glass-panel {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 2.5rem;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            margin-bottom: 3rem;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.8s ease-out 0.2s backwards;
+            margin-bottom: 5rem;
             position: relative;
-            overflow: hidden;
         }
 
-        .glass-panel::before {
+        .system-badge {
+            display: inline-block;
+            background: var(--primary-dim);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1.glitch {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            position: relative;
+            display: inline-block;
+            line-height: 1.2;
+        }
+
+        h1.glitch::before, h1.glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-base);
+            opacity: 0.8;
+            white-space: nowrap;
+        }
+
+        h1.glitch::before {
+            left: 3px;
+            text-shadow: -2px 0 var(--danger);
+            clip: rect(24px, 900px, 90px, 0);
+            animation: glitch-anim-1 3s infinite linear alternate-reverse;
+        }
+
+        h1.glitch::after {
+            left: -3px;
+            text-shadow: -2px 0 var(--primary);
+            clip: rect(85px, 900px, 140px, 0);
+            animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(10px, 9999px, 31px, 0); }
+            20% { clip: rect(60px, 9999px, 80px, 0); }
+            40% { clip: rect(30px, 9999px, 50px, 0); }
+            60% { clip: rect(80px, 9999px, 100px, 0); }
+            80% { clip: rect(20px, 9999px, 40px, 0); }
+            100% { clip: rect(90px, 9999px, 110px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(10px, 9999px, 40px, 0); }
+            40% { clip: rect(80px, 9999px, 110px, 0); }
+            60% { clip: rect(20px, 9999px, 50px, 0); }
+            80% { clip: rect(70px, 9999px, 90px, 0); }
+            100% { clip: rect(30px, 9999px, 60px, 0); }
+        }
+
+        .header-desc {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            margin-top: 1rem;
+            max-width: 600px;
+            border-left: 4px solid var(--danger);
+            padding-left: 1rem;
+        }
+
+        /* 粗獷主義卡片設計 (Brutalist Cards) */
+        .panel {
+            background: var(--surface);
+            border: 2px solid var(--surface-border);
+            padding: 3rem;
+            margin-bottom: 4rem;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .panel::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            top: 8px;
+            left: 8px;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--surface-border),
+                var(--surface-border) 2px,
+                transparent 2px,
+                transparent 8px
+            );
+            z-index: -1;
+            transition: all 0.4s ease;
         }
 
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
+        .panel:hover {
+            border-color: var(--primary);
+            transform: translate(-4px, -4px);
+        }
+
+        .panel:hover::after {
+            top: 12px;
+            left: 12px;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--primary-dim),
+                var(--primary-dim) 2px,
+                transparent 2px,
+                transparent 8px
+            );
+        }
+
+        .panel h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            display: inline-block;
+            border-bottom: 4px solid var(--danger);
+            padding-bottom: 0.5rem;
+        }
+        
+        .panel-config {
+            border-color: var(--primary);
+        }
+        
+        .panel-config h2 {
+            border-bottom: 4px solid var(--primary);
+        }
+
+        /* 表單設計 */
+        .form-row {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            gap: 2rem;
+            margin-bottom: 2rem;
         }
 
-        h2::after {
-            content: '';
-            flex-grow: 1;
-            height: 1px;
-            background: var(--glass-border);
+        @media(max-width: 768px) {
+            .form-row { flex-direction: column; gap: 1.5rem; }
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        .input-group {
+            flex: 1;
+            position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            color: #ccc;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+            color: var(--text-dim);
+            font-weight: 700;
         }
 
         input, select {
             width: 100%;
-            padding: 1rem 1.5rem;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            background: var(--bg-base);
+            border: 1px solid var(--surface-border);
+            color: var(--text-main);
+            font-family: 'Chakra Petch', monospace;
+            font-size: 1.1rem;
+            padding: 1.2rem;
+            border-radius: 0;
             outline: none;
+            transition: all 0.3s ease;
         }
 
         input:focus, select:focus {
-            border-color: var(--accent-glow-secondary);
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+            border-color: var(--primary);
+            box-shadow: inset 4px 0 0 var(--primary);
+            background: #000;
         }
 
         button {
             background: transparent;
-            color: white;
-            border: 1px solid var(--accent-glow);
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 12px;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            padding: 1.2rem 3rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
             position: relative;
             overflow: hidden;
-            z-index: 1;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
         button::before {
             content: '';
             position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 0, 85, 0.2), transparent);
-            transition: left 0.5s ease;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--danger);
             z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
         }
 
         button:hover {
-            background: rgba(255, 0, 85, 0.1);
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
-            border-color: #ff3377;
+            color: var(--bg-base);
         }
 
         button:hover::before {
-            left: 100%;
+            transform: scaleX(1);
+            transform-origin: left;
         }
 
-        .search-bar {
+        #error-msg {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* 表格設計 */
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box {
             position: relative;
-            margin-bottom: 2rem;
+            width: 300px;
         }
 
-        .search-bar input {
+        .search-box input {
             padding-left: 3rem;
-            border-radius: 50px;
+            border-color: var(--surface-border);
         }
 
-        .search-icon {
+        .search-box::before {
+            content: '[]';
             position: absolute;
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-muted);
+            color: var(--primary);
+            font-weight: 800;
+            font-family: 'Syne', sans-serif;
+        }
+
+        .table-wrapper {
+            border: 1px solid var(--surface-border);
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
+            border-collapse: collapse;
         }
 
         th {
             text-align: left;
-            padding: 1rem;
-            color: var(--text-muted);
-            font-weight: 400;
-            font-size: 0.9rem;
-            text-transform: uppercase;
+            padding: 1.5rem 1rem;
+            background: #000;
+            color: var(--text-dim);
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            border-bottom: 2px solid var(--surface-border);
         }
 
         td {
             padding: 1.2rem 1rem;
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        tr td:first-child { border-radius: 12px 0 0 12px; }
-        tr td:last-child { border-radius: 0 12px 12px 0; }
-
-        tr {
-            transition: transform 0.2s ease, background 0.2s ease;
+            border-bottom: 1px solid #1a1a1a;
+            transition: background 0.2s;
         }
 
         tr:hover td {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
         }
 
-        .tag {
-            background: rgba(255, 0, 85, 0.15);
-            color: #ff3377;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            border: 1px solid rgba(255, 0, 85, 0.3);
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            position: relative;
         }
 
-        .links-grid {
+        a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0; width: 100%; height: 1px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .badge-reason {
+            display: inline-block;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 0.2rem 0.6rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* 訂閱源卡片 */
+        .sub-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
-        .link-card {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 1.5rem;
+        .sub-card {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            border: 1px solid var(--surface-border);
+            background: #000;
+            padding: 2rem;
             text-decoration: none;
-            color: white;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .link-card:hover {
-            border-color: var(--accent-glow-secondary);
-            transform: translateY(-2px);
-            background: rgba(0, 229, 255, 0.05);
+        .sub-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+            transform-origin: bottom;
         }
 
-        .link-card .format {
+        .sub-card:hover {
+            border-color: var(--primary);
+            background: rgba(102, 252, 241, 0.03);
+        }
+
+        .sub-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .sub-card .type {
+            font-family: 'Syne', sans-serif;
             font-size: 1.5rem;
             font-weight: 800;
-            color: var(--accent-glow-secondary);
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        .sub-card .desc {
+            color: var(--text-dim);
+            font-size: 0.95rem;
         }
 
-        #error-msg {
-            color: #ff3377;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            display: none;
+        /* 進入動畫交錯 (Staggered Animations) */
+        @keyframes brutalSlide {
+            0% { opacity: 0; transform: translateY(40px) skewY(2deg); }
+            100% { opacity: 1; transform: translateY(0) skewY(0); }
         }
+
+        .stagger-1 { animation: brutalSlide 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) 0.1s both; }
+        .stagger-2 { animation: brutalSlide 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s both; }
+        .stagger-3 { animation: brutalSlide 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) 0.5s both; }
         
-        a {
-            color: var(--accent-glow-secondary);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        
-        a:hover {
-            color: white;
-            text-shadow: 0 0 8px var(--accent-glow-secondary);
-        }
     </style>
 </head>
 <body>
-    <div class="bg-mesh"></div>
-    
     <div class="container">
-        <header>
-            <h1>Threads 封鎖防護網</h1>
-            <p class="subtitle">社群協作的詐騙與廣告帳號封鎖清單 (Serverless Architecture)</p>
+        <header class="stagger-1">
+            <div class="system-badge">系統版本 v2.0.0 (雙引擎)</div>
+            <h1 class="glitch" data-text="Threads 封鎖防護網">Threads 封鎖防護網</h1>
+            <div class="header-desc">
+                分散式社群反制系統。支援 GitHub Issues 自動化與 Google Sheets 雙後端引擎，提供高效率之詐騙帳號阻斷機制。
+            </div>
         </header>
 
-        <div class="glass-panel">
-            <h2>🚨 舉報可疑帳號</h2>
-            <form id="report-form">
-                <div class="form-group">
-                    <label>Threads 使用者網址</label>
-                    <input type="text" id="url-input" placeholder="https://www.threads.com/@username" required autocomplete="off">
-                    <div id="error-msg">無效的 Threads 網址，或包含不允許的路徑 (如 /post/)。</div>
-                </div>
-                <div class="form-group">
-                    <label>舉報原因</label>
-                    <select id="reason-input">
-                        <option value="投資詐騙">投資詐騙</option>
-                        <option value="假帳號/機器人">假帳號/機器人</option>
-                        <option value="惡意廣告/釣魚">惡意廣告/釣魚</option>
-                        <option value="色情/不當內容">色情/不當內容</option>
-                        <option value="其他">其他</option>
+        <!-- 系統設定面板 -->
+        <section class="panel panel-config stagger-1" style="animation-delay: 0.15s;">
+            <h2>[ 系統設定面板 ]</h2>
+            <p style="color: var(--text-dim); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                本介面開放讓所有訪客自由切換體驗「資料儲存引擎」。設定將自動儲存於您的瀏覽器本機端。
+            </p>
+            <div class="form-row">
+                <div class="input-group">
+                    <label>資料儲存模式 (Backend Mode)</label>
+                    <select id="backend-mode" style="border-color: var(--primary);">
+                        <option value="github">GitHub Issues (管理員審核自動化)</option>
+                        <option value="sheets">Google Sheets (免伺服器直接寫入)</option>
                     </select>
                 </div>
-                <button type="submit">送出審查 (轉往 GitHub)</button>
-            </form>
-        </div>
 
-        <div class="glass-panel" style="animation-delay: 0.4s;">
-            <h2>🛡️ 封鎖清單查詢</h2>
-            <div class="search-bar">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" placeholder="搜尋 @username...">
+            </div>
+        </section>
+
+        <section class="panel stagger-2">
+            <h2>[ 舉報可疑目標 ]</h2>
+            <form id="report-form">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Threads 網址</label>
+                        <input type="text" id="url-input" placeholder="https://www.threads.com/@username" required autocomplete="off">
+                        <div id="error-msg">無效網址：網址格式錯誤或包含非法路徑 (/post/)。</div>
+                    </div>
+                    <div class="input-group">
+                        <label>違規類別</label>
+                        <select id="reason-input">
+                            <option value="投資詐騙">投資詐騙</option>
+                            <option value="假帳號/機器人">假帳號/機器人</option>
+                            <option value="惡意廣告/釣魚">惡意廣告/釣魚</option>
+                            <option value="色情/不當內容">色情/不當內容</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit">
+                    <span>執行舉報程序</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+            </form>
+        </section>
+
+        <section class="panel stagger-3">
+            <div class="table-controls">
+                <h2>[ 資料庫查詢 ]</h2>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="輸入帳號查詢...">
+                </div>
             </div>
             
-            <div style="overflow-x: auto;">
+            <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
-                            <th>帳號 (Username)</th>
-                            <th>原因</th>
-                            <th>收錄日期</th>
+                            <th>使用者帳號</th>
+                            <th>違規事項</th>
+                            <th>收錄時間</th>
                         </tr>
                     </thead>
                     <tbody id="blocklist-body">
+                        <!-- 資料由 JS 填入 -->
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
 
-        <div class="glass-panel" style="animation-delay: 0.6s;">
-            <h2>🔗 訂閱源 (Subscription)</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
-                將以下網址加入您的廣告攔截器 (如 AdGuard, uBlock) 或自行串接 API。
+        <section class="panel stagger-3" style="animation-delay: 0.7s;">
+            <h2>[ 系統訂閱源 ]</h2>
+            <p style="color: var(--text-dim); margin-bottom: 2rem; max-width: 600px;">
+                取得最新封鎖清單，串接至防毒軟體、廣告攔截器 (AdGuard/uBlock) 或自行進行二次開發。
+                (本區塊僅對應 GitHub 模式之靜態檔案)
             </p>
-            <div class="links-grid">
-                <a href="blocklist.json" target="_blank" class="link-card">
-                    <div>
-                        <div style="font-size: 0.9rem; color: var(--text-muted);">供開發者與 API 使用</div>
-                        <div style="font-weight: 600; margin-top: 0.3rem;">JSON 格式</div>
-                    </div>
-                    <div class="format">{ }</div>
+            <div class="sub-grid">
+                <a href="blocklist.json" target="_blank" class="sub-card">
+                    <div class="type">JSON 格式資料</div>
+                    <div class="desc">提供完整屬性與時間戳，適用於開發者 API 串接。</div>
                 </a>
-                <a href="blocklist.txt" target="_blank" class="link-card">
-                    <div>
-                        <div style="font-size: 0.9rem; color: var(--text-muted);">供過濾器直接訂閱</div>
-                        <div style="font-weight: 600; margin-top: 0.3rem;">TXT 格式</div>
-                    </div>
-                    <div class="format">≡</div>
+                <a href="blocklist.txt" target="_blank" class="sub-card">
+                    <div class="type">TXT 格式資料</div>
+                    <div class="desc">純文字網址列陣，適用於網路過濾器直接訂閱。</div>
                 </a>
             </div>
-        </div>
+        </section>
     </div>
 
     <script>
@@ -377,6 +552,21 @@
         const GITHUB_REPO = 'threadsblocklist'; // 需替換
 
         const threadsRegex = /^https?:\/\/(www\.)?threads\.com\/@([a-zA-Z0-9_\.]+)(\/?|\?.*)?$/;
+
+        // UI 元素
+        const modeSelect = document.getElementById('backend-mode');
+
+        // 初始化設定 (預設使用 Sheets)
+        let currentMode = localStorage.getItem('backendMode') || 'sheets';
+        const sheetsUrl = 'https://script.google.com/macros/s/AKfycbzqLcPOlsONoujtSaBneMvPqBQfsRUs6KLZwlyBqQ6FtUp_B6-BXs9pJ4iu_MYjromfAA/exec';
+
+        modeSelect.value = currentMode;
+
+        modeSelect.addEventListener('change', (e) => {
+            currentMode = e.target.value;
+            localStorage.setItem('backendMode', currentMode);
+            fetchBlocklist(); // 切換模式時重新拉取資料
+        });
 
         function validateURL(inputUrl) {
             const cleanUrl = inputUrl.trim();
@@ -392,50 +582,122 @@
             return { valid: false, username: null };
         }
 
-        document.getElementById('report-form').addEventListener('submit', function(e) {
+        // 提交表單邏輯
+        document.getElementById('report-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const urlInput = document.getElementById('url-input').value;
             const reason = document.getElementById('reason-input').value;
             const errorMsg = document.getElementById('error-msg');
+            const submitBtn = this.querySelector('button[type="submit"]');
 
             const validation = validateURL(urlInput);
 
             if (!validation.valid) {
                 errorMsg.style.display = 'block';
-                document.getElementById('url-input').style.borderColor = '#ff3377';
+                document.getElementById('url-input').style.borderColor = 'var(--danger)';
                 return;
             }
 
             errorMsg.style.display = 'none';
-            document.getElementById('url-input').style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            document.getElementById('url-input').style.borderColor = 'var(--surface-border)';
 
             const username = validation.username;
-            const title = encodeURIComponent(`【檢舉】@${username}`);
-            const body = encodeURIComponent(
+            const reasonText = reason.split(' ')[0];
+
+            if (currentMode === 'github') {
+                // GitHub Issues 模式
+                const title = encodeURIComponent(`【檢舉】@${username}`);
+                const body = encodeURIComponent(
 `### 檢舉資訊
 - **被檢舉帳號**: @${username}
 - **網址**: ${urlInput.trim()}
-- **原因**: ${reason}
+- **原因**: ${reasonText}
 
 *(請管理員確認後加上 \`approved\` 標籤以觸發自動更新)*`
-            );
+                );
+                const issueUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?title=${title}&body=${body}`;
+                window.open(issueUrl, '_blank');
+            } else if (currentMode === 'sheets') {
+                // Google Sheets 模式
+                if (!sheetsUrl || !sheetsUrl.startsWith('https://script.google.com/')) {
+                    alert('請先在「系統設定面板」輸入正確的 Google Apps Script Web App 網址！');
+                    sheetsUrlInput.focus();
+                    return;
+                }
 
-            const issueUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?title=${title}&body=${body}`;
-            window.open(issueUrl, '_blank');
+                const originalHTML = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span>傳送中 (UPLOADING)...</span>';
+                submitBtn.style.pointerEvents = 'none';
+
+                const now = new Date();
+                const addedAt = now.toISOString().split('T')[0];
+
+                try {
+                    // 使用 text/plain 避免觸發複雜的 CORS Preflight
+                    const response = await fetch(sheetsUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8',
+                        },
+                        body: JSON.stringify({
+                            username: username,
+                            url: urlInput.trim(),
+                            reason: reasonText,
+                            added_at: addedAt
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        alert('✅ 舉報已成功直接寫入 Google Sheets！');
+                        document.getElementById('report-form').reset();
+                        fetchBlocklist(); // 刷新表格
+                    } else if (result.status === 'exists') {
+                        alert('⚠️ 該帳號已在清單中，無須重複舉報。');
+                    } else {
+                        alert('❌ 寫入失敗：' + result.message);
+                    }
+                } catch (error) {
+                    alert('系統發生錯誤。可能是 Google Apps Script 權限未設為「所有人 (Anyone)」。');
+                    console.error(error);
+                } finally {
+                    submitBtn.innerHTML = originalHTML;
+                    submitBtn.style.pointerEvents = 'auto';
+                }
+            }
         });
 
+        // 載入清單邏輯
         let blocklistData = [];
 
         async function fetchBlocklist() {
+            const tbody = document.getElementById('blocklist-body');
+            
             try {
-                const response = await fetch('blocklist.json');
+                let fetchUrl = 'blocklist.json';
+                
+                if (currentMode === 'sheets') {
+                    if (!sheetsUrl || !sheetsUrl.startsWith('https://script.google.com/')) {
+                        renderTable([]);
+                        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--danger); padding: 3rem;">【系統警告】請提供有效的 Google Web App URL 才能載入資料</td></tr>';
+                        return;
+                    }
+                    fetchUrl = sheetsUrl;
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-dim); padding: 3rem;">連線至 Google 伺服器中... (FETCHING)</td></tr>';
+                }
+
+                const response = await fetch(fetchUrl);
                 if (response.ok) {
                     blocklistData = await response.json();
+                    if (blocklistData.error) throw new Error(blocklistData.error);
                 }
                 renderTable(blocklistData);
             } catch (error) {
                 console.error('Failed to load blocklist', error);
                 renderTable([]);
+                if(currentMode === 'sheets') {
+                     tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--danger); padding: 3rem;">連線失敗。請檢查網址或 Apps Script 權限。</td></tr>';
+                }
             }
         }
 
@@ -444,20 +706,21 @@
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#888;">目前清單為空或載入中</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-dim); padding: 3rem;">系統就緒 // 目前尚無紀錄</td></tr>';
                 return;
             }
 
             data.forEach((item, index) => {
                 const tr = document.createElement('tr');
-                tr.style.animation = `slideUp 0.3s ease-out ${index * 0.05}s backwards`;
+                // 動態延遲動畫
+                tr.style.animation = `brutalSlide 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) ${index * 0.05}s backwards`;
                 
                 tr.innerHTML = `
-                    <td>
+                    <td style="font-family: 'Chakra Petch', monospace; font-weight: 600;">
                         <a href="${item.url}" target="_blank">@${item.username}</a>
                     </td>
-                    <td><span class="tag">${item.reason}</span></td>
-                    <td style="color: #888; font-size: 0.9rem;">${item.added_at}</td>
+                    <td><span class="badge-reason">${item.reason}</span></td>
+                    <td style="color: var(--text-dim); font-size: 0.9rem;">${item.added_at}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -472,6 +735,7 @@
             renderTable(filtered);
         });
 
+        // 初始載入
         fetchBlocklist();
     </script>
 </body>
