@@ -4,8 +4,8 @@
 // @version      1.0
 // @description  自動攔截並隱藏 Threads 上的詐騙與廣告帳號貼文。自動同步 Google Sheets 系統訂閱源。
 // @author       Threads Blocker System
-// @match        *://*.threads.net/*
-// @match        *://threads.net/*
+// @match        *://*.threads.com/*
+// @match        *://threads.com/*
 // @grant        GM_xmlhttpRequest
 // @connect      script.google.com
 // @connect      script.googleusercontent.com

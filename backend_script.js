@@ -99,7 +99,7 @@ function doGet(e) {
   }
 
   if (format === 'txt') {
-    const textOutput = result.map(item => `https://www.threads.net/@${item.username}`).join('\n');
+    const textOutput = result.map(item => `https://www.threads.com/@${item.username}`).join('\n');
     return ContentService.createTextOutput(textOutput).setMimeType(ContentService.MimeType.TEXT);
   } else {
     return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);

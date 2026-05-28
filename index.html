@@ -715,16 +715,11 @@
         const pageInfo = document.getElementById('page-info');
         const filterCategory = document.getElementById('filter-category');
 
-        // Regex for background extraction. Accepts @username or full URL including /post/
+        // Regex for background extraction. Strictly accepts threads.com/@username format
         const extractUsername = (input) => {
             const clean = input.trim();
-            // Match 1: threads.net/@username
-            const urlMatch = clean.match(/(?:threads\.net\/@)([a-zA-Z0-9_.]+)/);
+            const urlMatch = clean.match(/(?:threads\.com\/@)([a-zA-Z0-9_.]+)/);
             if (urlMatch) return urlMatch[1];
-            
-            // Match 2: Exact username pattern (@username or username)
-            const userMatch = clean.match(/^@?([a-zA-Z0-9_.]+)$/);
-            if (userMatch) return userMatch[1];
             
             return null;
         };
@@ -813,7 +808,7 @@
                 }
                 
                 // Unlock search bar
-                searchInput.placeholder = "貼上網址或帳號 (例: https://www.threads.net/@scammer)";
+                searchInput.placeholder = "貼上網址 (例: https://www.threads.com/@scammer)";
                 searchInput.disabled = false;
                 searchBtn.disabled = false;
             } catch (err) {
@@ -986,7 +981,7 @@
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         username: username,
-                        url: `https://www.threads.net/@${username}`, // 強制正規化為標準網址
+                        url: `https://www.threads.com/@${username}`, // 強制正規化為標準網址
                         reason: reason,
                         added_at: addedAt
                     })
@@ -1035,7 +1030,7 @@
                     body: JSON.stringify({
                         action: 'appeal',
                         username: username,
-                        url: `https://www.threads.net/@${username}`,
+                        url: `https://www.threads.com/@${username}`,
                         reason: fullReason,
                         added_at: addedAt
                     })
