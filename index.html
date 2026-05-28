@@ -718,13 +718,15 @@
         // Regex for background extraction. Accepts @username or full URL including /post/
         const extractUsername = (input) => {
             const clean = input.trim();
-            // Match cases: 
-            // 1. https://www.threads.net/@username
-            // 2. https://www.threads.net/@username/post/...
-            // 3. @username
-            // 4. username (if it doesn't contain spaces)
-            const match = clean.match(/(?:threads\.net\/@|^@?)([a-zA-Z0-9_.]+)/);
-            return match ? match[1] : null;
+            // Match 1: threads.net/@username
+            const urlMatch = clean.match(/(?:threads\.net\/@)([a-zA-Z0-9_.]+)/);
+            if (urlMatch) return urlMatch[1];
+            
+            // Match 2: Exact username pattern (@username or username)
+            const userMatch = clean.match(/^@?([a-zA-Z0-9_.]+)$/);
+            if (userMatch) return userMatch[1];
+            
+            return null;
         };
 
         const showToast = (msg) => {
