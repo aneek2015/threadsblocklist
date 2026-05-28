@@ -986,7 +986,7 @@
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         username: username,
-                        url: rawUrl.trim(),
+                        url: `https://www.threads.net/@${username}`, // 強制正規化為標準網址
                         reason: reason,
                         added_at: addedAt
                     })
