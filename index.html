@@ -299,6 +299,17 @@
         .table-wrapper {
             overflow-x: auto;
             margin-bottom: 1.5rem;
+            /* 增加右側內陰影提示可滾動 */
+            background: 
+                linear-gradient(to right, var(--surface) 30%, rgba(16,16,20,0)),
+                linear-gradient(to right, rgba(16,16,20,0), var(--surface) 70%) 0 100%,
+                radial-gradient(farthest-side at 0 50%, rgba(0,0,0,0.5), transparent),
+                radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,0.5), transparent) 0 100%;
+            background-repeat: no-repeat;
+            background-color: var(--surface);
+            background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+            background-position: 0 0, 100%, 0 0, 100%;
+            background-attachment: local, local, scroll, scroll;
         }
 
         table {
@@ -515,9 +526,9 @@
             <p>社群驅動的黑名單，經專人嚴格審核，確保零誤殺。</p>
             
             <div class="search-container">
-                <input type="text" id="global-search" placeholder="貼上網址或帳號 (例: https://www.threads.net/@scammer)" autocomplete="off">
-                <button id="search-btn" title="搜尋">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" id="global-search" placeholder="資料庫連線中，請稍候..." autocomplete="off" disabled>
+                <button id="search-btn" title="搜尋" aria-label="搜尋帳號" disabled>
+                    <svg aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </button>
             </div>
             
@@ -552,9 +563,9 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn-primary" id="submit-btn">
+                <button type="submit" class="btn-primary" id="submit-btn" aria-label="送出舉報">
                     送出舉報
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </button>
             </form>
         </section>
@@ -607,16 +618,16 @@
                 <div class="sub-card">
                     <h3>JSON API 源</h3>
                     <p>提供完整屬性與時間戳，適用於開發者自動化串接。</p>
-                    <button class="btn-outline" onclick="copySubscription('json')">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <button class="btn-outline" onclick="copySubscription('json')" aria-label="複製 JSON 連結">
+                        <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                         複製 JSON 連結
                     </button>
                 </div>
                 <div class="sub-card">
                     <h3>TXT 訂閱源</h3>
                     <p>純文字網址列陣，適用於 AdGuard / uBlock 等過濾器直接訂閱。</p>
-                    <button class="btn-outline" onclick="copySubscription('txt')">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <button class="btn-outline" onclick="copySubscription('txt')" aria-label="複製 TXT 連結">
+                        <svg aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                         複製 TXT 連結
                     </button>
                 </div>
@@ -713,8 +724,8 @@
                     <td>
                         <div class="account-cell">
                             <a href="${item.url}" target="_blank" class="account-link">@${item.username}</a>
-                            <button class="copy-btn" title="複製帳號" onclick="copyToClipboard('@${item.username}', '已複製帳號 @${item.username}')">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            <button class="copy-btn" title="複製帳號" aria-label="複製帳號 @${item.username}" onclick="copyToClipboard('@${item.username}', '已複製帳號 @${item.username}')">
+                                <svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                             </button>
                         </div>
                     </td>
@@ -741,6 +752,11 @@
                     blocklistData.reverse();
                     filteredData = [...blocklistData];
                     renderTable();
+                    
+                    // Unlock search bar
+                    searchInput.placeholder = "貼上網址或帳號 (例: https://www.threads.net/@scammer)";
+                    searchInput.disabled = false;
+                    searchBtn.disabled = false;
                 }
             } catch (err) {
                 console.error(err);
@@ -779,7 +795,7 @@
                 feedbackArea.innerHTML = `
                     <div class="status-card danger">
                         <div class="status-icon">
-                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                            <svg aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
                         </div>
                         <div class="status-content">
                             <h3>此帳號已被封鎖 <span class="badge danger">${found.reason}</span></h3>
@@ -788,15 +804,15 @@
                     </div>`;
                 reportSection.classList.add('hidden');
             } else {
-                // Not found -> Show Safe / Expand Report
+                // Not found -> Show Neutral / Expand Report
                 feedbackArea.innerHTML = `
-                    <div class="status-card safe">
-                        <div class="status-icon">
-                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div class="status-card" style="border-color: var(--surface-border); background: var(--bg-base);">
+                        <div class="status-icon" style="background: var(--surface-border); color: var(--text-dim);">
+                            <svg aria-hidden="true" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
                         <div class="status-content">
-                            <h3>目前紀錄安全</h3>
-                            <p>未在黑名單中找到 @${username}。</p>
+                            <h3 style="color: var(--text-main);">查無封鎖紀錄</h3>
+                            <p>資料庫目前未收錄 @${username}。<strong style="color: var(--danger);">請注意，這不代表該帳號絕對安全。</strong>若您確認其有詐騙行為，請於下方舉報。</p>
                         </div>
                     </div>`;
                 
@@ -806,9 +822,23 @@
         };
 
         // Event Listeners
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            if (!e.target.value.trim()) {
+                feedbackArea.innerHTML = '';
+                reportSection.classList.add('hidden');
+                return;
+            }
+            searchTimeout = setTimeout(handleSearch, 400);
+        });
+        
         searchBtn.addEventListener('click', handleSearch);
         searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') handleSearch();
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                handleSearch();
+            }
         });
 
         filterCategory.addEventListener('change', (e) => {
@@ -839,7 +869,10 @@
             const btn = document.getElementById('submit-btn');
             
             const username = extractUsername(rawUrl);
-            if (!username) return;
+            if (!username) {
+                showToast('❌ 無法解析有效帳號，請確認網址格式');
+                return;
+            }
 
             const originalHtml = btn.innerHTML;
             btn.innerHTML = '傳送中...';
